@@ -1,54 +1,117 @@
-//Initial template for C++
+#include<bits/stdc++.h>
+using namespace std;
 
-#include<bits/stdc++.h> 
-using namespace std; 
 
  // } Driver Code Ends
-//User function template for C++
-
-class Solution{   
-public:
-    bool isPalindrome(string s)
-    {
-        int n=s.size();
-        for(int i=0;i<s.size();i++)
+class Solution {
+  public:
+    string longestPalin (string s) {
+        if(s.size()==0)
         {
-            if(s[i]!=s[n-i-1])
-            return false;
+            string ans="";
+            ans+=s[0];
+            return ans;
         }
-        return true;
-    }
-    string longestPalindrome(string S){
-        string ans="";
-        for(int i=0;i<S.size();i++)
+        else if(s.size()==2)
         {
-            
-            string k="";
-            for(int j=i;j<S.size();j++)
+            if(s[0]==s[1])
+                return s;
+            else
             {
-                k+=S[j];
-                if(isPalindrome(k) && k.size()>ans.size())
-                ans=k;
+            string ans="";
+            ans+=s[0];
+            return ans;
             }
+        }
+        
+        //variables to initialise start and end of palindromic substring
+        int start=0;
+        int end=0;
+         //first of all make a matrix and fill its diagonal elements to 1.
+        int n=s.size();
+        int dp[n][n];
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+               
+                if(i==j)
+                dp[i][j]=1;
+                else
+                    dp[i][j]=0;//filled all non diagonal elements with zero for now
+            }
+           
+        }
+        
+        //now filling the upper triangular elements just above diagonals
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(j-i==1)
+                {
+                    if(s[j]==s[i])
+                    {
+                        dp[i][j]=1;
+                        if((j-i)>(end-start))
+                        {
+                            end=j;
+                            start=i;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // now fill all other elements diagonally
+        
+        int k=2;
+        
+     
+        int i=0;
+        while(1)
+        {
+            int original=i;
+            for(int j=k;j<n;j++)
+            {
+                
+                dp[i][j]=(s[i]==s[j] && dp[i+1][j-1]);
+                if(dp[i][j]==1)
+                {
+                    if((j-i)>(end-start))
+                    {
+                        end=j;
+                        start=i;
+                    }
+                }
+                i++;
+            }
+           i=original;
+            k++;
+            if(k>=n)
+                break;
             
         }
+      
+        string ans="";
+        for(int i=start;i<=end;i++)
+            ans+=s[i];
         return ans;
     }
 };
 
 // { Driver Code Starts.
 
-
-
-int main(){
-    int t;
-    cin>>t;
-    while(t--){
-        string S;
-        cin>>S;
+int main()
+{
+    int t; cin >> t;
+    while (t--)
+    {
+        string S; cin >> S;
+        
         Solution ob;
-        cout<<ob.longestPalindrome(S)<<endl;
+        cout << ob.longestPalin (S) << endl;
     }
-    return 0;
 }
+
   // } Driver Code Ends
